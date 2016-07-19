@@ -1,2 +1,3 @@
 npm install
 node start app.js
+on browser: 127.0.0.1:3000
