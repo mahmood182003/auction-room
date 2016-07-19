@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    h1 Hello #{userId}
+    if data&&data.error
+        h3 An error occured: #{data.error}
+    form(name="bidding", action="/items/dobid?itemId=item1&userId=#{userId}", method="post")
+        if data&&data.status==="OK"
+            span Your bid was placed successfully.
+            br
+        else if data&&data.status==="OUTBID"
+            span Sorry, #{data.bidHolder} was fatser!
+            br
+        br
+        if data&&data.currentBid
+            span Highest bid: #{data.currentBid}
+        br
+        br
+        input(type="submit", value="Place My Bid")
+        br
+        br
+    form(name="bidding", action="/items/resetbid?itemId=item1&userId=#{userId}", method="post")
+        if data&&data.bidHolder==data.userId
+            input(type="submit", value="Room Reset")
