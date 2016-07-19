@@ -9,6 +9,23 @@ var userBids = {}; // remember which bid on which item
 var itemModel = require("../models/item");
 const bidIncrease = 10;
 
+
+itemApi.getItems = function getItems(params, callback) {
+    itemModel.get(params.itemId, function (err, myItem) {
+        console.log('getItems:', params)
+        if (myItem) {
+            if (userBids[params.itemId]) {
+                callback(null, {status: "OUTBID", currentBid: userBids[params.itemId].value, bidHolder: userBids[params.itemId].userId});
+            } else {
+                callback(null, myItem);
+            }
+        } else {
+            callback('item not found'); // some custom error code, known for frontend.
+        }
+    });
+};
+
+
 /**
  * handles concurrent bidding.
  * it relies on the in-memory state variables, must be handled differently in clustered env.
@@ -30,7 +47,7 @@ itemApi.doBid = function doBid(params, callback) {
                 callback(null, {status: "OK", currentBid: newBid.value});
             }
         } else {
-            callback(1004);
+            callback('item not found'); // some custom error code, known for frontend.
         }
     });
 };
@@ -40,7 +57,9 @@ itemApi.doBid = function doBid(params, callback) {
  * @param params
  * @param callback
  */
-itemApi.resetBid = function doBid(params, callback) {
+itemApi.resetRoom = function resetRoom(params, callback) {
+    console.log('resetRoom: ', params);
+
     if (userBids[params.itemId] && userBids[params.itemId].userId === params.userId) {
         delete userBids[params.itemId];
         callback();

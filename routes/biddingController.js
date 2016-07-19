@@ -19,18 +19,23 @@ router.get('/', function (req, res, next) {
 
 /* GET items listing. */
 router.get('/items', function (req, res, next) {
-    res.render('items', { userId: req.query && req.query.uid });
-});
-
-router.post('/dobid', function (req, res, next) {
-    itemApi.doBid(req.query, function (err, result) {
-        res.render('items', { error: err, data: result, userId: req.query && req.query.userId});
+    // fetch the list of items
+    itemApi.getItems(req.query, function (err, result) {
+        res.render('items', {error: err, data: result, userId: req.query && req.query.uid });
     });
 });
 
-router.post('/resetbid', function (req, res, next) {
-    itemApi.resetBid(req.query, function (err, result) {
-        res.render('items', { error: err, data: result, userId: req.query && req.query.userId});
+router.post('/dobid', function (req, res, next) {
+    // bid on an item
+    itemApi.doBid(req.query, function (err, result) {
+        res.redirect('/items?itemId=' + req.query.itemId + '&uid=' + req.query.userId);
+    });
+});
+
+router.post('/resetroom', function (req, res, next) {
+    itemApi.resetRoom(req.query, function (err) {
+        // redirect back to item list, with bid bottom enabled
+        res.redirect('/items?itemId=' + req.query.itemId + '&uid=' + req.query.userId);
     });
 });
 

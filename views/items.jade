@@ -2,10 +2,10 @@ extends layout
 
 block content
     h1 Hello #{userId}
-    if data&&data.error
-        h3 An error occured: #{data.error}
+    if error
+        h3 An error occured: #{error}
     form(name="bidding", action="/items/dobid?itemId=item1&userId=#{userId}", method="post")
-        if data&&data.status==="OK"
+        if data&&(data.status==="OK" || data.bidHolder===userId)
             span Your bid was placed successfully.
             br
         else if data&&data.status==="OUTBID"
@@ -14,11 +14,13 @@ block content
         br
         if data&&data.currentBid
             span Highest bid: #{data.currentBid}
+        else if data
+            span Please bid on #{data.name}. The starting price is #{data.startPrice}.
         br
         br
-        input(type="submit", value="Place My Bid")
+        input(type="submit", value="Place My Bid", disabled=data&&data.status||error)
         br
         br
-    form(name="bidding", action="/items/resetbid?itemId=item1&userId=#{userId}", method="post")
-        if data&&data.bidHolder==data.userId
+    if data&&data.bidHolder===userId
+        form(name="bidding", action="/items/resetroom?itemId=item1&userId=#{userId}", method="post")
             input(type="submit", value="Room Reset")

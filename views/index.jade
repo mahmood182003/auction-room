@@ -1,14 +1,15 @@
 extends layout
 
 block content
-  h1 A minimal auction room
-  span Enter the auction room as:
-  br
-  a(href='/items?uid=user1') User1
-  br
-  a(href='/items?uid=user2') User2
-  br
-  a(href='/items?uid=user3') User3
-  br
-  a(href='/items?uid=user4') User4
+    h1 A minimal auction room
+    span Enter the auction room as:
+    br
+    -var href = '/items?itemId=item1&uid=';
+    a(href=href+'user1') User1
+    br
+    a(href=href+'user2') User2
+    br
+    a(href=href+'user3') User3
+    br
+    a(href=href+'user4') User4
 
